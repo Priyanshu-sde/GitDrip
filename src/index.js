@@ -4,12 +4,22 @@ import { Command } from "commander";
 import fs from 'fs';
 import { getConfig } from "./config.js";
 import { addRepo } from "./repomanager.js";
+import { commitAndPush } from "./git.js";
 
 const program = new Command();
 
 program
   .name("gitdrip")
   .description("Automatically commit and push changes to origin");
+
+  program.command('push').description("pushes current repo").action(async () => {
+    try {
+        await commitAndPush(process.cwd());
+        console.log("commited and pushed sucessfully");
+    } catch(e) {
+        console.error('error',e.message);
+    }
+  })
 
   const repo = program.command('repo').description('Manage repo');
 
