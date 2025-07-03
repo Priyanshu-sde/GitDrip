@@ -3,7 +3,7 @@
 import { Command } from "commander";
 import fs from "fs";
 import { getApiKey, getConfig, saveApiKey } from "./config.js";
-import { addRepo } from "./repomanager.js";
+import { addRepo, removeRepo } from "./repomanager.js";
 import { commitAndPush } from "./git.js";
 import inquirer from 'inquirer';
 
@@ -62,6 +62,34 @@ repo
     addRepo(repoPath);
     console.log("Repo added");
   });
+
+  repo.command('remove [path]').description('Remove managed paths').option('--all', 'Remove all managed repos').action(
+    (repoPath, opts) => {
+      if(opts.all){
+        const repos = getConfig().repos;
+        repos.forEach(removeRepo);
+        console.log("Removed all the mangaged repo");
+      }
+      else{
+        removeRepo(repoPath);
+        console.log('Removed repo');
+      }
+    }
+  )
+
+
+  repo.command("scan <dir>").description('Scan for all git repo in a given directory and add them').action(async (rootDir) => {
+    const {default: fg} = await import('fast-glob');
+    const path = await fg(['**/.git'],{cwd : rootDir, onlyDirectories: true, absolute: true});
+    const repoPath = path.map(p => p.replace(/\/\.git$/,''));
+    let added = 0;
+    repoPath.forEach(p => {
+      addRepo(p);
+      added++;
+    })
+    console.log(`Added ${added} repo`);
+
+  })
 
 repo
   .command("list")

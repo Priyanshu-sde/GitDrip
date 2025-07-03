@@ -3,10 +3,10 @@ import fs from 'fs';
 import { generateCommitMsg } from "./ai.js";
 
 async function getDiff(git) {
-    const diff = await git.diff(['--cached']);
+    const diff = await git.diff(['--cached','--','.',':(exclude)package-lock.json']);
     if(!diff){
         await git.add('.');
-        return await git.diff(['--cached'])
+        return await git.diff(['--cached','--','.',':(exclude)package-lock.json']);
     }
     return diff;
 }

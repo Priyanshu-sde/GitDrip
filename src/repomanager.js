@@ -7,4 +7,8 @@ export function addRepo(repoPath){
         config.repos.push(repoPath);
         saveConfig(config);
     }
+} export function removeRepo(repoPath) {
+    const config = getConfig();
+    config.repos = config.repos.filter(r => r !== repoPath);
+    saveConfig(config);
 }
