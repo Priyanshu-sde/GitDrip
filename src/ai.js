@@ -11,7 +11,7 @@ export async function generateCommitMsg(diff, apiKey){
             messages : [
                 {
                     role : 'system',
-                    content : 'You are an expert software engineer. Write a concise, clear commit message for the following git diff.',
+                    content : 'You are an expert software engineer.return only the commit messages no explanation',
                 },
                 {
                     role: 'user',
