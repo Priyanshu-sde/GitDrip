@@ -4,7 +4,7 @@ import { getApiKey, getConfig, saveApiKey } from "./config.js";
 import { addRepo, removeRepo } from "./repomanager.js";
 import { commitAndPush } from "./git.js";
 import inquirer from "inquirer";
-import { checkSSH, generateSshKey, setupSSHwithGitHub } from "./ssh.js";
+import { checkSSH, generateSshKey, setupSSHwithGitHub, trustGitHost } from "./ssh.js";
 import path from 'path';
 
 const program = new Command();
@@ -58,6 +58,8 @@ program
     if(pubKeyPath) {
       await setupSSHwithGitHub(pubKeyPath);
     }
+
+    trustGitHost();
 
   });
 
