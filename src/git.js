@@ -35,7 +35,7 @@ export async function commitAndPush(repoPath, apiKey){
     await git.commit(commitMsg);
     try {
         await git.push();
-        console.log('Committed and pushed');
+        console.log(`Committed and pushed ${repoPath}`);
     } catch (e){
         console.error('Failed to push: ', e.message);
     }
