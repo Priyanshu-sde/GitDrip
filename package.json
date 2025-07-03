@@ -1,14 +1,24 @@
 {
   "name": "gitdrip",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "CLI tool that automatically commit ai generated messages and push it to origin",
+  "main": "src/index.js",
+  "bin": {
+    "gitdrip" : "bin/cli.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "git",
+    "cli",
+    "auto",
+    "ai",
+    "commit",
+    "push"
+  ],
+  "author": "Priyanshu Chaurasia priyanshu.sde@gmail.com (https://github.com/Priyanshu-sde)",
+  "license": "MIT",
   "type": "module",
   "dependencies": {
     "commander": "^14.0.0",
