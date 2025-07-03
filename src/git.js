@@ -1,6 +1,7 @@
 import simpleGit from "simple-git";
 import fs from 'fs';
 import { generateCommitMsg } from "./ai.js";
+import { error } from "console";
 
 async function getDiff(git) {
     const diff = await git.diff(['--cached','--','.',':(exclude)package-lock.json']);
@@ -11,6 +12,11 @@ async function getDiff(git) {
     return diff;
 }
 
+export async function getOrigin(git){
+    const remotes = await git.getRemotes(true);
+    const origin = remotes.find((r) => r.name === "origin"); 
+    return origin;
+}
 
 export async function commitAndPush(repoPath, apiKey){
     const git = simpleGit(repoPath);
@@ -23,7 +29,6 @@ export async function commitAndPush(repoPath, apiKey){
         console.log('No changes to commit');
         return;
     }
-
     
     let commitMsg;
     try {
@@ -37,8 +42,9 @@ export async function commitAndPush(repoPath, apiKey){
         await git.push();
         console.log(`Committed and pushed ${repoPath}`);
     } catch (e){
-        console.error('Failed to push: ', e.message);
+        if(e.message.includes("Permission denied (publickey)")){
+            console.log("SSH Authentication failed")
+        }
+        throw new error('Failed to push: ', e.message);
     }
-
-
 }
