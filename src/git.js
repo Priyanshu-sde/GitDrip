@@ -43,8 +43,10 @@ export async function commitAndPush(repoPath, apiKey){
         console.log(`Committed and pushed ${repoPath}`);
     } catch (e){
         if(e.message.includes("Permission denied (publickey)")){
-            console.log("SSH Authentication failed")
-        }
+            console.log("SSH Authentication failed \nAdd you public key to github \n run gitdrip setup")
+
+        } else {
         throw new error('Failed to push: ', e.message);
+        }
     }
 }
