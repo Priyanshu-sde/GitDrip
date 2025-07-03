@@ -1,5 +1,6 @@
 import simpleGit from "simple-git";
 import fs from 'fs';
+import { generateCommitMsg } from "./ai.js";
 
 async function getDiff(git) {
     const diff = await git.diff(['--cached']);
@@ -11,7 +12,7 @@ async function getDiff(git) {
 }
 
 
-export async function commitAndPush(repoPath){
+export async function commitAndPush(repoPath, apiKey){
     const git = simpleGit(repoPath);
     const isRepo = await git.checkIsRepo();
     if(!isRepo){
@@ -23,8 +24,15 @@ export async function commitAndPush(repoPath){
         return;
     }
 
+    
+    let commitMsg;
+    try {
+        commitMsg = await generateCommitMsg(diff,apiKey)
+    } catch (e){
+        console.error("Failed to generate commit messages",e.message);
+    }
     await git.add('.');
-    await git.commit("test commit from gitdrip");
+    await git.commit(commitMsg);
     try {
         await git.push();
         console.log('Committed and pushed');
