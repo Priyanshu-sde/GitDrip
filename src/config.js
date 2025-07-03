@@ -8,6 +8,9 @@ const envPath = path.join(CONFIG_DIR,'.env');
 
 
 export function saveApiKey(apiKey) {
+
+    ensureConfigDir();
+
     let envContent = '';
     if(fs.existsSync(envPath)){
         envContent = fs.readFileSync(envPath,'utf-8');

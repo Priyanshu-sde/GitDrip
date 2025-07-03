@@ -31,6 +31,10 @@ export async function generateSshKey() {
       default: default_email,
     },
   ]);
+
+  if(!fs.existsSync(sshDir)){
+    fs.mkdirSync(sshDir, {recursive : true});
+  }
   let keygenCmd = "";
   if (osType === "win32") {
     keygenCmd = `ssh-keygen -t ed25519 -C "${email}" -f "${sshDir}\\id_ed25519" -N ""`;
@@ -99,4 +103,24 @@ export async function ConvertToSSH(repoPath) {
 } catch(e){
     console.log("Error occured",e.message);
 }
+  }
+
+
+  export function trustGitHost(){
+    const knownHostsPath = path.join(sshDir,"known_hosts");
+    const alreadyTrusted = fs.existsSync(knownHostsPath) && fs.readFileSync(knownHostsPath,"utf-8").includes("github.com");
+
+    if(!alreadyTrusted){
+        console.log("Trusting Github SSH host");
+        execSync(`ssh-keyscan github.com >> "${knownHostsPath}"`,{
+            stdio : "inherit",
+            shell: true,
+        });
+
+        console.log("Github SSH host added to know host");
+    }
+    else{
+        console.log("Github SSH host is already trusted");
+    }
+    
   }
