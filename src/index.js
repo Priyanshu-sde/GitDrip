@@ -2,7 +2,7 @@ import { Command } from "commander";
 import fs from "fs";
 import { getApiKey, getConfig, saveApiKey } from "./config.js";
 import { addRepo, removeRepo } from "./repomanager.js";
-import { commitAndPush } from "./git.js";
+import { commitAndPush, commitAndPushAll } from "./git.js";
 import inquirer from "inquirer";
 import { checkSSH, generateSshKey, setupSSHwithGitHub, trustGitHost } from "./ssh.js";
 import path from 'path';
@@ -76,15 +76,7 @@ program
       process.exit(1);
     }
     if (opts.all) {
-      const repos = getConfig().repos;
-      for (const r of repos) {
-        try {
-          console.log(`Scanning ${r}`);
-          await commitAndPush(r, apiKey);
-        } catch (e) {
-          console.log("erro occured:", e.message);
-        }
-      }
+      await commitAndPushAll()
     } else {
       try {
         const apiKey = getApiKey();
