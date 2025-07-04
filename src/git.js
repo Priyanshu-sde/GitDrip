@@ -64,7 +64,7 @@ export async function commitAndPush(repoPath, apiKey) {
   }
 }
 
-export async function commitAndPushAll() {
+export async function commitAndPushAll(apiKey) {
   const repos = getConfig().repos;
   for (const r of repos) {
     try {

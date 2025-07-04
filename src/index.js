@@ -4,8 +4,14 @@ import { getApiKey, getConfig, saveApiKey } from "./config.js";
 import { addRepo, removeRepo } from "./repomanager.js";
 import { commitAndPush, commitAndPushAll } from "./git.js";
 import inquirer from "inquirer";
-import { checkSSH, generateSshKey, setupSSHwithGitHub, trustGitHost } from "./ssh.js";
-import path from 'path';
+import {
+  checkSSH,
+  generateSshKey,
+  setupSSHwithGitHub,
+  trustGitHost,
+} from "./ssh.js";
+import path from "path";
+import { setupAutostart, startDaemon } from "./scheduler.js";
 
 const program = new Command();
 
@@ -20,7 +26,7 @@ program
     let newAPI = true;
     const apiKey = getApiKey();
     if (apiKey) {
-      const {res} = await inquirer.prompt([
+      const { res } = await inquirer.prompt([
         {
           type: "confirm",
           name: "res",
@@ -43,27 +49,25 @@ program
       saveApiKey(apiKey);
       console.log("API key saved !");
     }
-    
+
     let pubKeyPath = await checkSSH();
-    
-    if(!pubKeyPath){      
+
+    if (!pubKeyPath) {
       pubKeyPath = await generateSshKey();
-    }
-    else{
-      console.log(`SSH is already preset skipping its setup........ \nkey found at ${pubKeyPath}`);
+    } else {
+      console.log(
+        `SSH is already preset skipping its setup........ \nkey found at ${pubKeyPath}`
+      );
       return;
     }
     console.log(pubKeyPath);
 
-    if(pubKeyPath) {
+    if (pubKeyPath) {
       await setupSSHwithGitHub(pubKeyPath);
     }
 
     trustGitHost();
-
   });
-
-
 
 program
   .command("push")
@@ -76,7 +80,7 @@ program
       process.exit(1);
     }
     if (opts.all) {
-      await commitAndPushAll()
+      await commitAndPushAll();
     } else {
       try {
         const apiKey = getApiKey();
@@ -98,8 +102,8 @@ repo
       console.error("Please enter a valid repo");
       return;
     }
-    const girDir = path.join(repoPath,".git");
-    if(!fs.existsSync(girDir)){
+    const girDir = path.join(repoPath, ".git");
+    if (!fs.existsSync(girDir)) {
       console.error("Not a valid git repo");
       return;
     }
@@ -154,6 +158,20 @@ repo
         console.log(repo);
       });
     }
+  });
+
+program
+  .command("daemon")
+  .description("Run gitdrip in background")
+  .action(() => {
+    startDaemon();
+  });
+
+program
+  .command("setup-autostart")
+  .description("setup gitdrip to auto start on login ")
+  .action(() => {
+    setupAutostart();
   });
 
 program.parse();

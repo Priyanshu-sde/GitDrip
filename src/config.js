@@ -43,3 +43,22 @@ export function saveConfig(config){
     ensureConfigDir();
     fs.writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2));
 }
+
+export function getPidFile() {
+    return path.join(os.homedir(),'.gitdrip','daemon.pid');
+}
+
+export function getLogFile() {
+    return path.join(os.homedir(),'.gitdrip','gitdrip.log');
+}
+
+export function logEntry(msg) {
+    ensureConfigDir();
+    const logPath = getLogFile();
+    const entry = `[${new Date().toISOString()}] ${msg} \n`;
+    fs.appendFileSync(logPath, entry);
+}
+
+export function getFrequency() {
+    return getConfig().frequency || 6;
+}
