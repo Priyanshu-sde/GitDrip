@@ -13,7 +13,7 @@ export async function startDaemon() {
     const pid = fs.readFileSync(pidFile, "utf-8");
     try {
       process.kill(Number(pid), 0);
-      console.log("gitdrip daemod id already running");
+      console.log("gitdrip daemod is already running");
       process.exit(0);
     } catch {
       fs.unlinkSync(pidFile);
