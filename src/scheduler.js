@@ -35,6 +35,11 @@ export async function startDaemon() {
   logEntry(`gitdrip daemon started. will commit and push code every ${freq} hour`);
   await commitAndPushAll(apiKey);
 
+  setInterval(() => {
+    logEntry("Trigerring scheduled commit and push");
+    commitAndPushAll(apiKey);
+  },interval);
+
 }
 
 export function setupAutostart() {
