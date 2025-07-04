@@ -172,6 +172,7 @@ program
   .description("setup gitdrip to auto start on login ")
   .action(() => {
     setupAutostart();
+    
   });
 
 program.parse();

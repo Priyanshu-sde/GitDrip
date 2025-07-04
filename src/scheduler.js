@@ -1,6 +1,8 @@
 import { commitAndPushAll } from "./git.js";
 import { ensureConfigDir, getApiKey, getFrequency, getPidFile, logEntry } from "./config.js";
 import fs from "fs";
+import os from 'os';
+import path from 'path';
 
 
 
