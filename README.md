@@ -1,4 +1,3 @@
-
 <h1 align="center">🚀 gitdrip</h1>
 <p align="center">
   <strong>Automatically commit and push code with AI-generated messages</strong><br>
@@ -21,6 +20,9 @@
 - Pushes commits to the remote repo
 - Supports managing and pushing multiple repositories at once
 - Stores your OpenRouter API key securely
+- **NEW**: SSH key generation and GitHub integration
+- **NEW**: Background daemon mode for automatic commits
+- **NEW**: Auto-start setup for system integration
 
 > Say goodbye to "final-final-fix-2" commits 😄
 
@@ -30,7 +32,7 @@
 
 ```bash
 npm install -g gitdrip
-````
+```
 
 > Requires Node.js 18+
 
@@ -38,13 +40,17 @@ npm install -g gitdrip
 
 ## 🔧 Setup
 
-First, set your OpenRouter API key:
+First, set your OpenRouter API key and SSH configuration:
 
 ```bash
 gitdrip setup
 ```
 
-You'll be prompted to paste your API key.
+This will:
+- Prompt for your OpenRouter API key
+- Generate SSH keys if not present
+- Open GitHub SSH settings page in your browser
+- Trust GitHub's SSH host
 
 ---
 
@@ -124,12 +130,41 @@ Displays all currently tracked repositories.
 
 ---
 
+## 🔄 Background Operations
+
+### 🖥️ Run Daemon Mode
+
+```bash
+gitdrip daemon
+```
+
+Runs gitdrip in the background, automatically committing and pushing changes every 6 hours (configurable).
+
+---
+
+### 🚀 Setup Auto-Start
+
+```bash
+gitdrip setup-autostart
+```
+
+Sets up gitdrip to automatically start on system login:
+
+- **Linux**: Creates a systemd user service
+- **macOS**: Provides instructions for LaunchAgent setup
+- **Windows**: Provides instructions for Task Scheduler setup
+
+---
+
 ## 🧠 How It Works
 
 * Uses `simple-git` to interact with local repos
 * Generates commit messages via OpenRouter + OpenAI models
 * Diff is trimmed to 4000 characters to stay within token limits
 * Stores configuration in `~/.gitdrip/config.json`
+* **NEW**: Automatically generates and configures SSH keys for GitHub
+* **NEW**: Background daemon runs scheduled commits every 6 hours
+* **NEW**: System integration for auto-start on login
 
 ---
 
@@ -137,14 +172,35 @@ Displays all currently tracked repositories.
 
 | Command                      | Description                       |
 | ---------------------------- | --------------------------------- |
-| `gitdrip setup`              | Set your OpenRouter API key       |
+| `gitdrip setup`              | Set your OpenRouter API key & SSH |
 | `gitdrip push`               | Commit and push the current repo  |
 | `gitdrip push --all`         | Commit and push all managed repos |
+| `gitdrip daemon`             | Run gitdrip in background mode    |
+| `gitdrip setup-autostart`    | Setup auto-start on system login  |
 | `gitdrip repo add <path>`    | Add a single repo                 |
 | `gitdrip repo remove [path]` | Remove a repo                     |
 | `gitdrip repo remove --all`  | Remove all repos                  |
 | `gitdrip repo scan <dir>`    | Scan a directory for Git repos    |
 | `gitdrip repo list`          | Show all managed repos            |
+
+---
+
+## 🔧 Configuration
+
+### Daemon Frequency
+
+The daemon runs every 6 hours by default. You can modify this by editing `~/.gitdrip/config.json`:
+
+```json
+{
+  "repos": ["/path/to/repo1", "/path/to/repo2"],
+  "frequency": 6
+}
+```
+
+### Logs
+
+Daemon logs are stored in `~/.gitdrip/gitdrip.log` for monitoring background operations.
 
 ---
 
@@ -160,6 +216,8 @@ MIT © 2025 [Priyanshu Chaurasia](https://github.com/Priyanshu-sde)
 * [ ] Support for `.gitignore` parsing
 * [ ] Add support for `.gitdriprc` config overrides
 * [ ] Custom AI model selection
+* [ ] Webhook notifications for failed commits
+* [ ] Branch-specific commit strategies
 
 ---
 

@@ -1,6 +1,6 @@
 {
   "name": "gitdrip",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "description": "CLI tool that automatically commit ai generated messages and push it to origin",
   "main": "src/index.js",
   "bin": {
