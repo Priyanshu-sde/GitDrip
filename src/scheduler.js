@@ -2,6 +2,7 @@ import { commitAndPushAll } from "./git.js";
 import {
   ensureConfigDir,
   getApiKey,
+  getConfig,
   getFrequency,
   getPidFile,
   logEntry,
@@ -9,6 +10,7 @@ import {
 import fs from "fs";
 import os from "os";
 import path from "path";
+import { scanDir } from "./repomanager.js";
 
 export async function startDaemon() {
   ensureConfigDir();
@@ -39,6 +41,13 @@ export async function startDaemon() {
   logEntry(
     `gitdrip daemon started. will commit and push code every ${freq} hour`
   );
+  
+  const dirs = getConfig().dirs;
+
+  for(const dir in dirs){
+    scanDir(dir);
+  }
+
   await commitAndPushAll(apiKey);
 
   setInterval(() => {

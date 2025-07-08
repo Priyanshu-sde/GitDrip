@@ -1,7 +1,7 @@
 import { Command } from "commander";
 import fs from "fs";
 import { getApiKey, getConfig, saveApiKey } from "./config.js";
-import { addRepo, removeRepo } from "./repomanager.js";
+import { addDir, addRepo, removeRepo, scanDir } from "./repomanager.js";
 import { commitAndPush, commitAndPushAll } from "./git.js";
 import inquirer from "inquirer";
 import {
@@ -130,19 +130,14 @@ repo
   .command("scan <dir>")
   .description("Scan for all git repo in a given directory and add them")
   .action(async (rootDir) => {
-    const { default: fg } = await import("fast-glob");
-    const path = await fg(["**/.git"], {
-      cwd: rootDir,
-      onlyDirectories: true,
-      absolute: true,
-    });
-    const repoPath = path.map((p) => p.replace(/\/\.git$/, ""));
-    let added = 0;
-    repoPath.forEach((p) => {
-      addRepo(p);
-      added++;
-    });
-    console.log(`Added ${added} repo`);
+    if(!fs.existsSync(rootDir) || !fs.lstatSync(rootDir).isDirectory()){
+      console.error("Directory does not exist");
+      return;
+    } else{
+      addDir(rootDir);
+    }
+    scanDir(rootDir);  
+    
   });
 
 repo

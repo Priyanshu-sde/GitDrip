@@ -35,7 +35,7 @@ export function ensureConfigDir(){
 
 export function getConfig(){
     ensureConfigDir();
-    if(!fs.existsSync(CONFIG_PATH)) return {repos: [], frequency : 1};
+    if(!fs.existsSync(CONFIG_PATH)) return {repos: [],dirs : [], frequency : 1};
     return JSON.parse(fs.readFileSync(CONFIG_PATH,'utf-8'));
 }
 
