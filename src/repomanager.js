@@ -17,6 +17,10 @@ export function addRepo(repoPath){
 
 export function addDir(rootDir) {
     const config = getConfig();
+
+    if(!config.dirs){
+        config.dirs = []
+    }
     if(!config.dirs.includes(rootDir)){
         config.dirs.push(rootDir);
         saveConfig(config);
