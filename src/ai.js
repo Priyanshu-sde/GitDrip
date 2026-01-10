@@ -7,7 +7,7 @@ export async function generateCommitMsg(diff, apiKey){
     });
     try {
         const chatCompletion = await openai.chat.completions.create({
-            model : 'qwen/qwen-2.5-coder-32b-instruct:free',
+            model : 'mistralai/devstral-2512:free',
             messages : [
                 {
                     role : 'system',
