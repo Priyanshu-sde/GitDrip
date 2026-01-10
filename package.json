@@ -1,10 +1,10 @@
 {
   "name": "gitdrip",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "CLI tool that automatically commit ai generated messages and push it to origin",
   "main": "src/index.js",
   "bin": {
-    "gitdrip" : "bin/cli.js"
+    "gitdrip": "bin/cli.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
