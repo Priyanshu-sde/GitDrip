@@ -1,4 +1,5 @@
 import { OpenAI } from "openai";
+import { getModel } from "./config.js";
 
 export async function generateCommitMsg(diff, apiKey){
     const openai = new OpenAI({
@@ -7,7 +8,7 @@ export async function generateCommitMsg(diff, apiKey){
     });
     try {
         const chatCompletion = await openai.chat.completions.create({
-            model : 'mistralai/devstral-2512:free',
+            model : getModel(),
             messages : [
                 {
                     role : 'system',

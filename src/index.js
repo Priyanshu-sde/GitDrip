@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import fs from "fs";
-import { getApiKey, getConfig, saveApiKey } from "./config.js";
+import { getApiKey, getConfig, getModel, saveApiKey, saveModel } from "./config.js";
 import { addDir, addRepo, removeRepo, scanDir } from "./repomanager.js";
 import { commitAndPush, commitAndPushAll } from "./git.js";
 import inquirer from "inquirer";
@@ -153,6 +153,58 @@ repo
         console.log(repo);
       });
     }
+  });
+
+program
+  .command("model")
+  .description("Scan and select a free model from OpenRouter")
+  .action(async () => {
+    const apiKey = getApiKey();
+    if (!apiKey) {
+      console.error("No API key found. Run gitdrip setup first.");
+      process.exit(1);
+    }
+
+    console.log("Fetching free models from OpenRouter...");
+    let models;
+    try {
+      const res = await fetch("https://openrouter.ai/api/v1/models", {
+        headers: { Authorization: `Bearer ${apiKey}` },
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      models = data.data.filter(
+        (m) =>
+          m.id.endsWith(":free") ||
+          (m.pricing && m.pricing.prompt === "0" && m.pricing.completion === "0")
+      );
+    } catch (e) {
+      console.error("Failed to fetch models:", e.message);
+      process.exit(1);
+    }
+
+    if (models.length === 0) {
+      console.log("No free models available.");
+      process.exit(0);
+    }
+
+    const current = getModel();
+    const { selectedModel } = await inquirer.prompt([
+      {
+        type: "list",
+        name: "selectedModel",
+        message: `Select a free model (current: ${current}):`,
+        choices: models.map((m) => ({
+          name: `${m.name || m.id} [${m.id}]`,
+          value: m.id,
+        })),
+        default: models.findIndex((m) => m.id === current),
+        pageSize: 15,
+      },
+    ]);
+
+    saveModel(selectedModel);
+    console.log(`Model set to: ${selectedModel}`);
   });
 
 program

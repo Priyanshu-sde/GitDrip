@@ -62,3 +62,13 @@ export function logEntry(msg) {
 export function getFrequency() {
     return getConfig().frequency || 6;
 }
+
+export function saveModel(modelId) {
+    const config = getConfig();
+    config.model = modelId;
+    saveConfig(config);
+}
+
+export function getModel() {
+    return getConfig().model || 'mistralai/devstral-2512:free';
+}
